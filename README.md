@@ -1,20 +1,31 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
-</div>
+# 生产测试车间数据展示大屏幕 (离线本地版)
 
-# Run and deploy your AI Studio app
+本项目是专为工厂车间量身定制的 MCU (1带50) 自动测试工装大屏可视化监控系统。项目采用极简架构，纯离线/局域网设计，无需外部 API Key 依赖。
 
-This contains everything you need to run your app locally.
+## 🖥 核心大屏功能
 
-View your app in AI Studio: https://ai.studio/apps/393bd56a-146f-4c17-b6f0-f3bbac117086
+1. **设备连接状态**：
+   - 顶部实时显示物理设备在线状态与串口通信参数（COM口、波特率等）。
+   - 具备全周期的动态倒计时提醒（一个周期全部测试完毕后等待 10 秒开启新一周期）。
 
-## Run Locally
+2. **核心数控指标 (Stat KPI Cards)**：
+   - **当前周期进度 (Cycle Progress)**：1带50的工装当前的批量并行测试进度。
+   - **实时合格率 (Yield Rate)**：实时累计计算所有良率百分比。
+   - **故障单元数 (Defects Count)**：记录当批次及累计不合格的缺陷产品数目。
+   - **产出节拍 (Cycle Pace)**：可视化量化工位测试的单次计算用时。
 
-**Prerequisites:**  Node.js
+3. **1代50 矩阵数控工装图 (Physical 50-Fixture Grid View)**：
+   - 50个测试工位采用 $10 \times 5$ 的物理矩阵精准映射。
+   - 各自独立状态机变换：`IDLE (空闲/灰色)` ➔ `TESTING (测试中/蓝色进度条)` ➔ `PASS (合格/绿色)` 或 `FAIL (不合格/红色)`。
+   - 根据您的最新生产工艺，单次测试仅需 **2.5秒**，每次多工位并行批量（5个/组）测试，一周期完成后系统**等待10秒**进行物理卸载与自动重置，无缝轮询。
 
+4. **可视化分析指标**
+   - **每小时良率趋势图**：基于折线图监控产线波动。
+   - **不良缺陷分类帕累托占比图 (Pareto Chart)**：直观展现主要的缺陷来源（电压超标、电流过低、通信失败等），便于技术员快速定位工艺问题。
+   - **通讯日志流 (Log Terminal Overlay)**：实时跟踪测试工装串口上传的十六进制或事件包数据。
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠 技术实现
+
+- **前端技术栈**：React 19 + TypeScript + Tailwind CSS (v4) + Recharts (图表) + Motion (微动画)。
+- **页面自适应**：全屏严格采用 `h-screen` 独占锁定，确保工业大屏在高分辨率显示器/电视上**无垂直滚动条**，完美居中自适应展示。
+- **离线安全**：此项目完全移除任何第三方 API 或 Gemini 远程智能计算模块，无网络环境下也可以独立运行与模拟，保护工业涉密数据不出厂。
